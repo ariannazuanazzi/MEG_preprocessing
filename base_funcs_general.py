@@ -344,6 +344,10 @@ def match_list(A, B, on_replace='delete'):
     assert len(B_sel) == len(A_sel)
     return A_sel.astype(int), B_sel.astype(int)
 
+
+import numpy as np
+
+
 # least square
 def least_square_reference (inst , empty_room = None , max_times_samples = 2000 ,
                              bad_channels = None , scaler = None , mrk = None ,
@@ -408,6 +412,10 @@ def least_square_reference (inst , empty_room = None , max_times_samples = 2000 
     # Other channels
     ch_misc = np.where ([ ch [ 'coil_type' ] not in [ 6001 , 6002 ]
                            for ch in chan_info ]) [ 0 ]
+
+    # check if refs is included
+    assert len(ch_ref) != 0, "MEG refs are not among the channels! They are needed for denoise!"
+
     # Bad channel
     ch_bad = np.empty (0)
     if (bad_channels is not None) and len (bad_channels) :

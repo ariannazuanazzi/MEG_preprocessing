@@ -55,7 +55,7 @@ else:
     blockn_folder = str(blockn).strip('[]') + '/'
 # select the name of the save folder based on whether data are concat or not
 
-blocks = [f'_Twotones_block{block}' for block in blockn]
+blocks = [f'_Singletone_block{block}' for block in blockn]
 blocks_behav = ''
 # blocks_behav = blocks #if only one block
 # define block number
@@ -265,8 +265,8 @@ baseline = (tmin , 0)
 
 # in some cases the block onset trigger was not recorded so this takes care of the case when it was not
 # if blockonset_recorded:
-event_id = { 'tone1' : 1, 'tone2' : 2}
-#event_id = { 'tone1' : 1}
+#event_id = { 'tone1' : 1, 'tone2' : 2}
+event_id = { 'tone1' : 255}
 
 scaling = 0.000000000005
 # scalings for plot

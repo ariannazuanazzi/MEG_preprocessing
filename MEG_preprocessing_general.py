@@ -127,9 +127,9 @@ else :
     raw_ER = mne.io.read_raw_fif (ER_file_converted , preload = True)
     # load empty room data to update interpolated channels there as well
 
-    raw_inter.pick_types (meg = True)
-    raw_ER.pick_types (meg = True)
-    # pick channel type: only MEG otherwise signal of other channel (eg sound) is used for interpol
+    raw_inter.pick_types (meg = True, ref_meg = True)
+    raw_ER.pick_types (meg = True, ref_meg = True)
+    # pick channel type: only MEG otherwise signal of other channel (eg sound) is used for interpol (is this true?). However refs are needed for denoise
 
     epoch_for_autoreject = mne.Epochs (raw_inter , events , event_id = event_id , tmin = tmin , tmax = tmax ,
                                         proj = True , baseline = baseline , preload = True ,
@@ -168,7 +168,7 @@ else :
 
     trial_info [ 'bads' ] = raw_inter.info [ 'bads' ]
     # save the bad channel info
-    raw_ER.info [ 'bads' ] = raw_inter.info [ 'bads' ]
+    #raw_ER.info [ 'bads' ] = raw_inter.info [ 'bads' ]
     # set bad channels consistent in ER as well
 
     print (f'Bad channels final: {trial_info [ "bads" ]}, number = {len (trial_info [ "bads" ])}')
@@ -187,7 +187,8 @@ else :
 
     raw_inter.interpolate_bads (reset_bads = True)
     raw_ER.interpolate_bads (reset_bads = True)
-    # interpolate bads (MNE function interpolate_bads) and reset so that we have same number of channels for all blocks/subjects
+    #interpolate bads (MNE function interpolate_bads) and reset so that we have same number of channels for all blocks/subjects
+
 
     raw_inter.save (raw_interpolate_file , overwrite = True)
     raw_ER.save (ER_interpolate_file , overwrite = True)
@@ -217,7 +218,7 @@ if eye_link_events :
     sac_channel , blk_channel = get_eyelink (raw , events , eyelink_file , eog_channels , high_pass, low_pass, save_plot, figure_path)
 else :
     raw_eog = raw.copy()
-    raw_eog._data[0:157, :] = raw_inter._data # put excluded channels (included EOG) back
+    raw_eog._data[0:157, :] = raw_inter._data[0:157, :] # put excluded channels (included EOG) back
     eog_channel = raw_eog.copy().pick_types (meg = False , eog = True)
     eog_channel.info [ 'highpass' ] = high_pass
     eog_channel.info [ 'lowpass' ] = low_pass
@@ -234,7 +235,7 @@ else :
     raw_lsd = least_square_reference (raw_interpolate_file , ER_interpolate_file)
     # apply LSD
 
-    raw_lsd.pick_types (meg = True , misc = False)
+    raw_lsd.pick_types (meg = True, ref_meg = False, misc = False)
     # get meg channel only since information in MISC channel is lost after LSD
 
     raw_lsd.save (raw_lsd_file , overwrite = True)
