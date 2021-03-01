@@ -261,7 +261,7 @@ aud = 0
 # if using StimTracker sending pulses for actual auditory onsets
 
 baseline = (tmin , 0)
-# set baseline
+# set baseline: be careful to select the correct baseline based on the particular design!!
 
 # in some cases the block onset trigger was not recorded so this takes care of the case when it was not
 # if blockonset_recorded:

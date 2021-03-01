@@ -481,7 +481,7 @@ def find_bad_channels(raw, events, window_size=200, epoch_tmax=60.,
                       low_percentile=4., high_percentile=97.,
                       freq_selected=.4):
     '''
-    created by Laura Gwilliams (lg5@nyu.edu) - March2020
+    created by Laura Gwilliams (lg5@nyu.edu)  and Arianna Zuanazzi (az1864@nyu.edu) - March2020
 
     INPUT:
 
@@ -546,14 +546,14 @@ def find_bad_channels(raw, events, window_size=200, epoch_tmax=60.,
     return raw.info['bads']
 
 # bad channels for epoched signal
-def find_bad_channels_epochs(epochs, low_percentile=2., high_percentile=98.,
-                             freq_selected=.5):#(epochs, low_percentile=4., high_percentile=97.,freq_selected=.2):
+def find_bad_channels_epochs(epochs, megchs=157, low_percentile=3., high_percentile=97.,
+                             freq_selected=.2):
     '''
-    created by Laura Gwilliams (lg5@nyu.edu) - March2020
+    created by Laura Gwilliams (lg5@nyu.edu) and Arianna Zuanazzi (az1864@nyu.edu) - March2020
 
     INPUT:
 
-    epochs: instance of mne epochs object
+    epochs: instance of mne epochs object, sliced to have only meg and not ref_meg
     low_percentile: mark channels that have a range less than this percentile
     high_percentile: mark channels that have a range larger than this percentile
     freq_selected: pick channels that are marked at least this proportion of the time
@@ -564,8 +564,8 @@ def find_bad_channels_epochs(epochs, low_percentile=2., high_percentile=98.,
     '''
 
     # params
-    n_trials, n_chs, n_times = epochs._data.shape
-    epoch_data = epochs._data
+    n_trials, n_chs, n_times = epochs._data[:, 0:megchs, :].shape # only use meg channels, not refs
+    epoch_data = epochs._data[:, 0:megchs, :]
 
     # now we take 1 second chunks, compute the range, and see how this fits with the distribution
     picked_chs = np.zeros([n_trials, n_chs])

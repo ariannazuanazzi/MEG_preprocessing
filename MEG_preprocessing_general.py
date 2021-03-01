@@ -40,6 +40,7 @@ from base_funcs_general import *
 #########################################################
 # READ RAW -------------------------------------------------------
 raw = mne.io.read_raw_fif (raw_alldata_fileName , preload = True)
+raw = mne.io.read_raw_fif (raw_alldata_fileName , preload = True)
 # read fif image
 print(raw.info)
 # print raw info
@@ -124,11 +125,11 @@ else :
     raw_inter = raw.copy()
     # load raw data for rejection and interpolation
 
-    raw_ER = mne.io.read_raw_fif (ER_file_converted , preload = True)
+    raw_ER_inter = raw_ER.copy()
     # load empty room data to update interpolated channels there as well
 
     raw_inter.pick_types (meg = True, ref_meg = True)
-    raw_ER.pick_types (meg = True, ref_meg = True)
+    raw_ER_inter.pick_types (meg = True, ref_meg = True)
     # pick channel type: only MEG otherwise signal of other channel (eg sound) is used for interpol (is this true?). However refs are needed for denoise
 
     epoch_for_autoreject = mne.Epochs (raw_inter , events , event_id = event_id , tmin = tmin , tmax = tmax ,
@@ -160,7 +161,7 @@ else :
     # check bad channels
 
     raw_inter.info [ 'bads' ] = bad_channels
-    raw_ER.info [ 'bads' ] = bad_channels
+    raw_ER_inter.info [ 'bads' ] = bad_channels
     # set bad channels
 
     raw_inter.plot (block = True, duration = 100, n_channels = 40, title = 'Raw_selectBads',  scalings = scaling)
@@ -168,7 +169,7 @@ else :
 
     trial_info [ 'bads' ] = raw_inter.info [ 'bads' ]
     # save the bad channel info
-    #raw_ER.info [ 'bads' ] = raw_inter.info [ 'bads' ]
+    raw_ER_inter.info [ 'bads' ] = raw_inter.info [ 'bads' ]
     # set bad channels consistent in ER as well
 
     print (f'Bad channels final: {trial_info [ "bads" ]}, number = {len (trial_info [ "bads" ])}')
@@ -186,12 +187,12 @@ else :
     # save channels to interpolate
 
     raw_inter.interpolate_bads (reset_bads = True)
-    raw_ER.interpolate_bads (reset_bads = True)
+    raw_ER_inter.interpolate_bads (reset_bads = True)
     #interpolate bads (MNE function interpolate_bads) and reset so that we have same number of channels for all blocks/subjects
 
 
     raw_inter.save (raw_interpolate_file , overwrite = True)
-    raw_ER.save (ER_interpolate_file , overwrite = True)
+    raw_ER_inter.save (ER_interpolate_file , overwrite = True)
     # overwrite w/  bad channel info/interpolated bads
 
 if view_plot:
