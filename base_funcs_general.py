@@ -103,40 +103,6 @@ def call_msg_box (title = 'ICA Component') :
         return ICAs
 
 
-# setup plot for head movement
-def plot_movement (rawObj, save_plot, figure_path) :
-
-    xyz = np.array ([ hpi [ 'r' ] for hpi in rawObj.info [ 'dig' ] [ 8 : ] ]) * 100
-
-    xyz = xyz [ : :100 ]
-
-    times = np.linspace (0 , rawObj.n_times , num = len (xyz)) / 1000
-
-
-    plt.figure (figsize = (15 , 10))
-
-    plt.subplot (311)
-    plt.plot (times , xyz [ : , 0 ])
-    plt.plot (times , np.zeros (times.shape [ 0 ] ,) , linestyle = 'dashed' , color = 'red')
-    plt.title ('x')
-    plt.xlabel ('Time (s)')
-    plt.ylabel ('Movement (mm)')
-
-    plt.subplot (312)
-    plt.plot (times , xyz [ : , 1 ])
-    plt.plot (times , np.zeros (times.shape [ 0 ] ,) , linestyle = 'dashed' , color = 'red')
-    plt.title ('y')
-    plt.xlabel ('Time (s)')
-    plt.ylabel ('Movement (mm)')
-
-    plt.subplot (313)
-    plt.plot (times , xyz [ : , 2 ])
-    plt.plot (times , np.zeros (times.shape [ 0 ] ,) , linestyle = 'dashed' , color = 'red')
-    plt.title ('z')
-    plt.xlabel ('Time (s)')
-    plt.ylabel ('Movement (mm)')
-
-
 # setup function to use eyelink data
 def convert_sacevents (onlyevent_file) :
 

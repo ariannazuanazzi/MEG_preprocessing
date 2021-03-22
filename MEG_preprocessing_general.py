@@ -51,13 +51,6 @@ raw.set_channel_types ({ eog_channels : 'eog' })
 # set eye tracking channel as eog channel
 
 if view_plot:
-    plot_movement (raw, save_plot, figure_path)
-    # plot head movement in coordinates x,y,z
-
-if save_plot:
-    matplotlib.pyplot.savefig(f'{figure_path}headmovement.png',dpi=dpi)
-
-if view_plot:
     raw.plot_psd (tmax = np.inf , fmax = 250 , average = False)
     # psd plots
 
